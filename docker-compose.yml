@@ -1,0 +1,61 @@
+# Brings up the whole environment with a single `docker compose up`:
+#   postgres (logical WAL) -> seed (one-shot) -> streamer (continuous).
+# Credentials are simple, documented dev values — override via env if needed.
+
+x-app-env: &app-env
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: 5432
+  POSTGRES_DB: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: secret
+
+services:
+  postgres:
+    image: postgres:16
+    # Logical WAL enabled so candidates can choose CDC / logical replication.
+    command: postgres -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=10
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  seed:
+    build: .
+    environment:
+      <<: *app-env
+      SEED_USERS: ${SEED_USERS:-1000}
+      SEED_ASSISTANTS: ${SEED_ASSISTANTS:-50}
+      SEED_CONVERSATIONS: ${SEED_CONVERSATIONS:-5000}
+      SEED_MESSAGES: ${SEED_MESSAGES:-100000}
+      SEED_DAYS: ${SEED_DAYS:-90}
+      SEED_FEEDBACK_RATE: ${SEED_FEEDBACK_RATE:-0.15}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: python -m src.seed
+    restart: "no"
+
+  streamer:
+    build: .
+    environment:
+      <<: *app-env
+      STREAM_INTERVAL: ${STREAM_INTERVAL:-2}
+      STREAM_BATCH_MIN: ${STREAM_BATCH_MIN:-1}
+      STREAM_BATCH_MAX: ${STREAM_BATCH_MAX:-10}
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    command: python -m src.streamer
+    restart: unless-stopped
+
+volumes:
+  pgdata:
