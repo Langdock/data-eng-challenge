@@ -1,11 +1,9 @@
 # Data Engineering Take-Home: Live Assistant Analytics
 
 Welcome! This repo gives you a running, **continuously-growing** operational
-database for a conversational-AI assistant product. Your job is to ingest it
+database for a conversational-AI product. Your job is to ingest it
 into an analytical warehouse and build analytics on top. The warehouse side is
-**not** included, that's what you'll build.
-
-Scope: roughly **half a day**.
+**not** included, that's what you'll build!
 
 ---
 
@@ -13,8 +11,7 @@ Scope: roughly **half a day**.
 
 A single `docker compose up` starts three things:
 
-1. **`postgres`**: the operational database, with **logical WAL enabled**
-   (`wal_level=logical`), so you can use logical replication / CDC if you want.
+1. **`postgres`**: the operational database. It has a wal replication on.
 2. **`seed`**: a one-shot container that creates the schema and bulk-loads a
    realistic dataset (~1k users, ~50 assistants, ~5k conversations, ~100k
    messages, plus feedback), then exits. It's idempotent and re-runnable.
@@ -71,9 +68,6 @@ make psql
 | `make reseed` | Wipe data and reload the seed in-place (`--force`)          |
 | `make down`   | Stop everything **and delete the data volume** (full reset) |
 
-Seed volume and streamer cadence are configurable via env vars, see
-`.env.example`.
-
 ---
 
 ## Schema overview
@@ -110,24 +104,15 @@ The goal is also not just to have the analytical setup but to go down the modell
 ## Deliverables
 
 1. **Code**: your ingestion + warehouse + analytics, runnable with clear
-   instructions (ideally `docker compose` or a short script).
-2. **A short architecture / trade-offs writeup** (~1 page): how it works, why
-   you chose batch vs CDC, how freshness is maintained, what you'd do with more
+   instructions (ideally `docker compose` or a short script) as git repo or zip.
+2. **A short writeup** (~1 page): how it works, why
+   you chose the architecture, how freshness is maintained, what you'd do with more
    time, and any assumptions.
-
-You don't need to modify this repo, treat it as the upstream source system.
 
 ---
 
 ## Evaluation criteria
 
-- **Correctness**: do the analytics produce right answers against live data?
-- **Freshness strategy**: is the incremental/CDC approach sound and justified?
-- **Modeling**: is the warehouse schema clean, queryable, and well-reasoned?
-- **Code quality**: readable, runnable, sensibly structured.
-- **Communication**: clear writeup of decisions and trade-offs.
-
-We care more about **clear thinking and sound trade-offs** than about covering
-every nice-to-have. Tell us what you'd do next.
+Treat this as not only a platform challenge but a modelling one. What models did you decide for and why. We care more about **clear thinking and sound trade-offs** than about covering every nice-to-have.
 
 Good luck, have fun with it!
