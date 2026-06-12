@@ -31,7 +31,7 @@ def load_refs(conn):
         cur.execute("SELECT id, user_id FROM conversations")
         convs = cur.fetchall()
     if not convs or not model_ids:
-        raise RuntimeError("no conversations/models found — run the seed first")
+        raise RuntimeError("no conversations/models found, run the seed first")
     # Assign a stable model per conversation so model_id is consistent.
     conv_model = {cid: random.choice(model_ids) for (cid, _u) in convs}
     log(f"loaded {len(convs)} conversations and {len(model_ids)} models")
@@ -87,7 +87,7 @@ def main():
                                             uncached, cached, output, row[8]))
                     usage_n += 1
         total += n
-        log(f"inserted {n} messages ({', '.join(kinds)}), {usage_n} usage — total msgs this run: {total}")
+        log(f"inserted {n} messages ({', '.join(kinds)}), {usage_n} usage, total msgs this run: {total}")
         time.sleep(INTERVAL)
 
 

@@ -129,7 +129,7 @@ def build_messages_for_conversation(conv, model_ids, target_msgs):
     conversation's user and uses the conversation's model.
 
     Returns (message_rows, answer_records) where answer_records are
-    (message_id, user_id, model_id, created_at) tuples — used to derive
+    (message_id, user_id, model_id, created_at) tuples, used to derive
     feedback and usage rows.
     """
     conv_id, conv_user_id, _assistant, _title, _source, conv_created = conv
@@ -269,7 +269,7 @@ def main():
         if force:
             truncate(conn)
         if already_seeded(conn):
-            log("database already seeded — nothing to do (use --force to reseed)")
+            log("database already seeded, nothing to do (use --force to reseed)")
             return
         seed_all(conn)
         log("seed complete")

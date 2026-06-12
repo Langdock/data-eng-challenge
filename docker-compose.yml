@@ -1,6 +1,6 @@
 # Brings up the whole environment with a single `docker compose up`:
 #   postgres (logical WAL) -> seed (one-shot) -> streamer (continuous).
-# Credentials are simple, documented dev values — override via env if needed.
+# Credentials are simple, documented dev values, override via env if needed.
 
 x-app-env: &app-env
   POSTGRES_HOST: postgres
