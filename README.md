@@ -113,6 +113,8 @@ The goal is also not just to have the analytical setup but to go down the modell
 
 ## Evaluation criteria
 
-Treat this as not only a platform challenge but a modelling one. What models did you decide for and why. We care more about **clear thinking and sound trade-offs** than about covering every nice-to-have.
+Try to invest no more than 6 hours on the challenge. After the challenge please send your submission (fork or zip) in an email to niklas@langdock.com with pascal@langdock.com and omar.eladawy@langdock.com in CC.
+
+Treat this as not only a platform challenge but a modelling one. What models did you decide for and why, how would you prepare for scaling needs etc. We care more about **clear thinking and sound trade-offs** than about covering every nice-to-have.
 
 Good luck, have fun with it!
