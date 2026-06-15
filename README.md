@@ -106,7 +106,7 @@ The goal is also not just to have the analytical setup but to go down the modell
 1. **Code**: your ingestion + warehouse + analytics, runnable with clear
    instructions (ideally `docker compose` or a short script) as git repo or zip.
 2. **A short writeup** (~1 page): how it works, why
-   you chose the architecture, how freshness is maintained, what you'd do with more
+   you chose the architecture, how would you address scaling needs, how freshness is maintained, what you'd do with more
    time, and any assumptions.
 
 ---
