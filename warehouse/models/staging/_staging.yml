@@ -1,0 +1,88 @@
+version: 2
+
+# Foreign keys warn rather than fail: topics are consumed independently, so a child can land seconds before its parent.
+models:
+  - name: stg_users
+    columns:
+      - name: user_id
+        data_tests: [unique, not_null]
+      - name: plan
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [free, pro, enterprise]
+
+  - name: stg_models
+    columns:
+      - name: model_id
+        data_tests: [unique, not_null]
+
+  - name: stg_assistants
+    columns:
+      - name: assistant_id
+        data_tests: [unique, not_null]
+
+  - name: stg_conversations
+    columns:
+      - name: conversation_id
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_users')
+                field: user_id
+              config:
+                severity: warn
+      - name: source
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [web, api, slack, teams]
+
+  - name: stg_messages
+    columns:
+      - name: message_id
+        data_tests: [unique, not_null]
+      - name: conversation_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_conversations')
+                field: conversation_id
+              config:
+                severity: warn
+      - name: role
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [user, assistant, tool]
+      - name: type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [prompt, answer, reasoning, text, tool]
+
+  - name: stg_usage
+    columns:
+      - name: usage_id
+        data_tests: [unique, not_null]
+
+  - name: stg_feedback
+    columns:
+      - name: feedback_id
+        data_tests: [unique, not_null]
+      - name: message_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_messages')
+                field: message_id
+              config:
+                severity: warn
+      - name: rating
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, -1]
+                quote: false

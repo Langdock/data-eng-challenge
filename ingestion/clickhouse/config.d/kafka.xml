@@ -1,0 +1,6 @@
+<clickhouse>
+    <!-- Debezium creates topics during its snapshot, after ClickHouse subscribes; the 5-min default delays first load. -->
+    <kafka>
+        <topic_metadata_refresh_interval_ms>5000</topic_metadata_refresh_interval_ms>
+    </kafka>
+</clickhouse>

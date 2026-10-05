@@ -1,0 +1,13 @@
+[sqlfluff]
+dialect = clickhouse
+templater = jinja
+max_line_length = 120
+# CP03/CP05: ClickHouse function and type names are case-sensitive (JSONExtractString, UInt64).
+# AL09: "m.user_id as user_id" is required; ClickHouse otherwise names the column "m.user_id".
+# RF04: name/type/source/comment are upstream column names. ST06: column order is deliberate.
+exclude_rules = CP03, CP05, AL09, RF04, ST06
+
+[sqlfluff:templater:jinja]
+# Stubs ref/source/config; our one macro is loaded from the project.
+apply_dbt_builtins = True
+load_macros_from_path = warehouse/macros

@@ -1,0 +1,56 @@
+# src/ and schema.sql are the provided upstream system: never rewritten.
+exclude: ^(src/|schema\.sql$)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 4.4.0
+    hooks:
+      - id: sqlfluff-lint
+        # dbt models only; the ClickHouse DDL in ingestion/ is beyond the dialect's formatter.
+        files: ^warehouse/
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # Docker-backed checks: need Docker running.
+  - repo: local
+    hooks:
+      - id: compose-config
+        name: docker compose config
+        entry: docker compose config -q
+        language: system
+        files: ^(docker-compose\.yml|\.env\.example)$
+        pass_filenames: false
+      - id: dbt-parse
+        name: dbt parse
+        # Mounts the working tree so the check sees uncommitted edits, not the built image.
+        entry: docker compose run --rm --no-deps -v ./warehouse:/dbt dbt dbt parse --target-path /tmp/target --log-path /tmp/logs
+        language: system
+        files: ^warehouse/
+        pass_filenames: false

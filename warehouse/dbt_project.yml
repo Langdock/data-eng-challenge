@@ -1,0 +1,12 @@
+name: warehouse
+version: "1.0.0"
+profile: warehouse
+
+flags:
+  send_anonymous_usage_stats: false
+
+# Everything else is a view (dbt default), so staging and freshness are always live.
+models:
+  warehouse:
+    marts:
+      +materialized: table
