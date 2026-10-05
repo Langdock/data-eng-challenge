@@ -1,0 +1,60 @@
+version: 2
+
+# Fact → dim relationships warn, as in staging: topics land independently.
+models:
+  - name: dim_users
+    columns:
+      - name: user_id
+        data_tests: [unique, not_null]
+
+  - name: dim_assistants
+    columns:
+      - name: assistant_id
+        data_tests: [unique, not_null]
+
+  - name: dim_models
+    columns:
+      - name: model_id
+        data_tests: [unique, not_null]
+
+  - name: fct_messages
+    columns:
+      - name: message_id
+        data_tests: [unique, not_null]
+      - name: user_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_users')
+                field: user_id
+              config:
+                severity: warn
+
+  - name: fct_generations
+    columns:
+      - name: message_id
+        data_tests: [unique, not_null]
+      # Soft join guard: one usage row must never match two answers.
+      - name: usage_id
+        data_tests: [unique]
+      - name: model_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_models')
+                field: model_id
+              config:
+                severity: warn
+      - name: assistant_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_assistants')
+                field: assistant_id
+              config:
+                severity: warn
+
+  - name: fct_conversations
+    columns:
+      - name: conversation_id
+        data_tests: [unique, not_null]

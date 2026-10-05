@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: freshness
+    columns:
+      - name: source_table
+        data_tests: [unique, not_null]

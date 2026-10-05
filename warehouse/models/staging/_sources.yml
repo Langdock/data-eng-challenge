@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw
+    description: CDC landing tables fed by the ClickHouse Kafka engine (ingestion/clickhouse/init/01_raw.sql).
+    tables:
+      - name: cdc_events
+        description: Debezium row events (r/c/u/d), ReplacingMergeTree(lsn) on (tbl, id).
+      - name: cdc_truncates
+        description: Debezium truncate events; max(lsn) is the current epoch.

@@ -1,0 +1,16 @@
+{
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "database.hostname": "postgres",
+  "database.user": "postgres",
+  "database.password": "secret",
+  "database.dbname": "postgres",
+  "topic.prefix": "pg",
+  "plugin.name": "pgoutput",
+  "skipped.operations": "none",
+  "decimal.handling.mode": "string",
+  "tombstones.on.delete": "false",
+  "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "key.converter.schemas.enable": "false",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false"
+}

@@ -1,0 +1,12 @@
+warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      host: "{{ env_var('CLICKHOUSE_HOST', 'localhost') }}"
+      password: "{{ env_var('CLICKHOUSE_PASSWORD', 'secret') }}"
+      schema: analytics
+      threads: 4
+      # Unmatched LEFT JOIN columns become NULL (ClickHouse default is 0 / zero-uuid).
+      custom_settings:
+        join_use_nulls: 1
